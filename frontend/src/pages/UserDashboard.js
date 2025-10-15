@@ -12,7 +12,7 @@ export default function UserDashboard() {
 
   const fetchCars = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/api/cars");
+      const res = await axios.get("https://car-rental-frontend-x71h.onrender.com");
       setCars(res.data);
     } catch (err) {
       console.error("Error fetching cars:", err);
