@@ -10,9 +10,10 @@ export default function UserDashboard() {
     fetchCars();
   }, []);
 
+  // ✅ Fetch cars from your backend API (correct Render URL)
   const fetchCars = async () => {
     try {
-      const res = await axios.get("https://car-rental-frontend-x71h.onrender.com");
+      const res = await axios.get("https://car-rental-backend-ximf.onrender.com/api/cars");
       setCars(res.data);
     } catch (err) {
       console.error("Error fetching cars:", err);
@@ -24,9 +25,11 @@ export default function UserDashboard() {
     window.location.href = "/";
   };
 
+  // ✅ Filter cars by selected type
   const filteredCars =
     filterType === "All" ? cars : cars.filter((car) => car.type === filterType);
 
+  // ✅ Sort cars by price
   const sortedCars = [...filteredCars].sort((a, b) => {
     if (sortOrder === "asc") return a.price - b.price;
     if (sortOrder === "desc") return b.price - a.price;
@@ -35,6 +38,7 @@ export default function UserDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Available Cars</h1>
         <button
@@ -45,6 +49,7 @@ export default function UserDashboard() {
         </button>
       </div>
 
+      {/* Filters */}
       <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex gap-4">
         <select
           value={filterType}
@@ -69,6 +74,7 @@ export default function UserDashboard() {
         </select>
       </div>
 
+      {/* Cars Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {sortedCars.map((car) => (
           <div
@@ -85,6 +91,13 @@ export default function UserDashboard() {
             <p className="text-sm text-gray-500">{car.type}</p>
           </div>
         ))}
+
+        {/* No cars found */}
+        {sortedCars.length === 0 && (
+          <p className="text-gray-600 col-span-full text-center">
+            No cars available.
+          </p>
+        )}
       </div>
     </div>
   );
