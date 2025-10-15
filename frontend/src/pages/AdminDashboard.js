@@ -7,11 +7,8 @@ export default function AdminDashboard() {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("SUV");
 
-  // ✅ Automatically use Render URL in production and localhost for development
-  const API_BASE_URL =
-    process.env.NODE_ENV === "production"
-      ? "https://car-rental-backend-ximf.onrender.com/api/cars"
-      : "http://localhost:5001/api/cars";
+  // ✅ Use deployed Render URL
+  const API_BASE_URL = "https://car-rental-backend-ximf.onrender.com/api/cars";
 
   useEffect(() => {
     fetchCars();
