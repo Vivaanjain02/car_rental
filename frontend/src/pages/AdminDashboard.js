@@ -7,40 +7,63 @@ export default function AdminDashboard() {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("SUV");
 
+  // ✅ Automatically use the correct backend URL (local or deployed)
+  const API_BASE_URL =
+    process.env.NODE_ENV === "production"
+      ? "https://your-backend-service.onrender.com/api/cars" // 🔹 replace this with your Render URL
+      : "http://localhost:5001/api/cars";
+
   useEffect(() => {
     fetchCars();
   }, []);
 
+  // ✅ Fetch all cars
   const fetchCars = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/api/cars");
+      const res = await axios.get(API_BASE_URL);
       setCars(res.data);
     } catch (err) {
-      console.error("Error fetching cars:", err);
+      console.error("🚨 Error fetching cars:", err.message);
+      if (err.response) {
+        console.error("Response error:", err.response.status, err.response.data);
+      } else if (err.request) {
+        console.error("No response from server. Check backend connection.");
+      } else {
+        console.error("Request setup error:", err.message);
+      }
     }
   };
 
+  // ✅ Add a new car
   const addCar = async () => {
+    if (!model || !price) {
+      alert("Please enter all fields");
+      return;
+    }
     try {
-      await axios.post("http://localhost:5001/api/cars", { model, price, type });
+      await axios.post(API_BASE_URL, { model, price, type });
       setModel("");
       setPrice("");
       setType("SUV");
       fetchCars();
     } catch (err) {
-      alert("Failed to add car");
+      console.error("🚨 Failed to add car:", err);
+      alert("Failed to add car. Check backend connection.");
     }
   };
 
+  // ✅ Delete a car
   const deleteCar = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/cars/${id}`);
+      await axios.delete(`${API_BASE_URL}/${id}`);
       fetchCars();
     } catch (err) {
+      console.error("🚨 Failed to delete car:", err);
       alert("Failed to delete car");
     }
   };
 
+  // ✅ Logout
   const handleLogout = () => {
     localStorage.removeItem("userRole");
     window.location.href = "/";
@@ -58,6 +81,7 @@ export default function AdminDashboard() {
         </button>
       </div>
 
+      {/* Add Car Section */}
       <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
         <h2 className="text-xl font-semibold mb-4">Add a New Car</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -94,6 +118,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      {/* Cars List */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {cars.map((car) => (
           <div
@@ -101,7 +126,7 @@ export default function AdminDashboard() {
             className="bg-white p-4 rounded-lg shadow-md border flex flex-col justify-between"
           >
             <img
-              src={car.image}
+              src={car.image || "https://via.placeholder.com/400x200?text=No+Image"}
               alt={car.model}
               className="w-full h-40 object-cover rounded mb-3"
             />
