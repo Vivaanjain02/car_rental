@@ -12,8 +12,8 @@ const UserCarList = () => {
   const fetchCars = async () => {
     try {
       const url = filterType
-        ? `http://localhost:5001/api/cars?type=${filterType}`
-        : `http://localhost:5001/api/cars`;
+        ? `https://car-rental-frontend-x71h.onrender.com?type=${filterType}`
+        : `https://car-rental-frontend-x71h.onrender.com`;
       const res = await axios.get(url);
       setCars(res.data);
     } catch (error) {
